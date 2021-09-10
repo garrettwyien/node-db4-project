@@ -1,28 +1,21 @@
 const db = require('../../data/db-config');
 
 async function find()  {
-    const recipesList = await db('recipes')
+    const recipes = await db('recipes');
+    const ingredients = await db('ingredients')
+
     const result = [];
-    for (let i=0; i <= recipesList.length; i++) {
-        recipesList.forEach(obj=>{
-                const ingredientsList = async () =>{ 
-                    await db('ingredients')
-                        .select('ingredient_name', 'amount')
-                        .where('recipe_id', obj.recipe_id);
-                }
-                const stepsList = async () => {
-                    await db('steps')
-                        .select('step_number', 'instructions')
-                        .where('recipe_id', obj.recipe_id);
-                }
-            const item = {
-                recipe_name: obj.recipe_name,
-                ingredients: ingredientsList(),
-                steps: stepsList()    
-            }
-            result.push(item)
-        })
-    }
+    recipes.map(obj=>{
+
+        const item = {
+            recipe_id: obj.recipe_id,
+            recipe_name: obj.recipe_name,
+            ingredients: [],
+            steps: []
+        }
+        result.push(item)
+    })
+    
 
     return result;
 }
